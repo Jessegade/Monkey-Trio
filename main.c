@@ -12,41 +12,39 @@ GdkPixbuf *create_pixbuf(const gchar * filename)
    return pixbuf;
 }
 
-static void activate (GtkApplication *app, gpointer user_data)
+int main( int argc, char *argv[])
 {
-  GtkWidget *window;
-  GtkWidget *button;
-  GtkWidget *button_box;
-  GtkWidget *image;
-  GtkWidget *layout;
+    GtkWidget *window;
+    GtkWidget *layout;
+    GtkWidget *image;
+    GtkWidget *button;
 
-  window = gtk_application_window_new (app);
-  gtk_window_set_title (GTK_WINDOW (window), "Monkey Trio");
-  gtk_window_set_default_size (GTK_WINDOW (window), 800, 500);
-  gtk_window_set_icon(GTK_WINDOW(window), create_pixbuf("C:/Users/Miki/Monkey-Trio/icon.png"));
+    gtk_init(&argc, &argv);
 
-  /*image = gtk_image_new_from_file("C:/Users/Miki/Pictures/haha oppa/7870744793.jpg");
-  gtk_layout_put(GTK_LAYOUT(layout), image, 0, 0);*/
+    window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
+    gtk_window_set_default_size(GTK_WINDOW(window), 800, 600);
+    gtk_window_set_icon(GTK_WINDOW(window), create_pixbuf("image/icon.png"));
+    gtk_window_set_position(GTK_WINDOW(window), GTK_WIN_POS_CENTER);
 
-  button_box = gtk_button_box_new (GTK_ORIENTATION_HORIZONTAL);
-  gtk_container_add (GTK_CONTAINER (window), button_box);
+    layout = gtk_layout_new(NULL, NULL);
+    gtk_container_add(GTK_CONTAINER (window), layout);
+    gtk_widget_show(layout);
 
-  button = gtk_button_new_with_label ("Hello World");
-  g_signal_connect_swapped (button, "clicked", G_CALLBACK (gtk_widget_destroy), window);
-  gtk_container_add (GTK_CONTAINER (button_box), button);
+    image = gtk_image_new_from_file("image/01.jpg");
+    gtk_layout_put(GTK_LAYOUT(layout), image, 0, 0);
 
-  gtk_widget_show_all (window);
+    button = gtk_button_new_with_label("Quit");
+    gtk_layout_put(GTK_LAYOUT(layout), button, 150, 50);
+    gtk_widget_set_size_request(button, 80, 35);
+
+    g_signal_connect(G_OBJECT(button), "clicked",G_CALLBACK(gtk_main_quit), G_OBJECT(window));
+
+    g_signal_connect_swapped(G_OBJECT(window), "destroy",G_CALLBACK(gtk_main_quit), NULL);
+
+    gtk_widget_show_all(window);
+
+    gtk_main();
+
+    return 0;
 }
 
-int main (int argc, char **argv)
-{
-  GtkApplication *app;
-  int status;
-
-  app = gtk_application_new ("org.gtk.example", G_APPLICATION_FLAGS_NONE);
-  g_signal_connect (app, "activate", G_CALLBACK (activate), NULL);
-  status = g_application_run (G_APPLICATION (app), argc, argv);
-  g_object_unref (app);
-
-  return status;
-}
