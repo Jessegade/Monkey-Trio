@@ -1,4 +1,16 @@
 #include <gtk/gtk.h>
+GdkPixbuf *create_pixbuf(const gchar * filename)
+{
+   GdkPixbuf *pixbuf;
+   GError *error = NULL;
+   pixbuf = gdk_pixbuf_new_from_file(filename, &error);
+   if(!pixbuf) {
+      fprintf(stderr, "%s\n", error->message);
+      g_error_free(error);
+   }
+
+   return pixbuf;
+}
 
 static void activate (GtkApplication *app, gpointer user_data)
 {
@@ -11,9 +23,10 @@ static void activate (GtkApplication *app, gpointer user_data)
   window = gtk_application_window_new (app);
   gtk_window_set_title (GTK_WINDOW (window), "Monkey Trio");
   gtk_window_set_default_size (GTK_WINDOW (window), 800, 500);
+  gtk_window_set_icon(GTK_WINDOW(window), create_pixbuf("C:/Users/Miki/Monkey-Trio/icon.png"));
 
-  image = gtk_image_new_from_file("C:/Users/Miki/Pictures/haha oppa/7870744793.jpg");
-  gtk_layout_put(GTK_LAYOUT(layout), image, 0, 0);
+  /*image = gtk_image_new_from_file("C:/Users/Miki/Pictures/haha oppa/7870744793.jpg");
+  gtk_layout_put(GTK_LAYOUT(layout), image, 0, 0);*/
 
   button_box = gtk_button_box_new (GTK_ORIENTATION_HORIZONTAL);
   gtk_container_add (GTK_CONTAINER (window), button_box);
