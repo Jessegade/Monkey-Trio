@@ -17,6 +17,7 @@ int main( int argc, char *argv[])
     GtkWidget *window;
     GtkWidget *layout;
     GtkWidget *image;
+    GtkWidget *imagebutton;
     GtkWidget *button;
 
     gtk_init(&argc, &argv);
@@ -33,8 +34,12 @@ int main( int argc, char *argv[])
     image = gtk_image_new_from_file("image/01.jpg");
     gtk_layout_put(GTK_LAYOUT(layout), image, 0, 0);
 
+    imagebutton = gtk_image_new_from_file("image/icon.png");
+    gtk_layout_put(GTK_LAYOUT(layout), image, 0, 0);
+
     button = gtk_button_new_with_label("Quit");
     gtk_layout_put(GTK_LAYOUT(layout), button, 150, 50);
+    gtk_button_set_image(GTK_BUTTON(button), imagebutton);
     gtk_widget_set_size_request(button, 80, 35);
 
     g_signal_connect(G_OBJECT(button), "clicked",G_CALLBACK(gtk_main_quit), G_OBJECT(window));
@@ -47,4 +52,3 @@ int main( int argc, char *argv[])
 
     return 0;
 }
-
