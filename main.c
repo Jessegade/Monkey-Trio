@@ -34,8 +34,12 @@ int widget_destroy(GtkWidget *widget, gpointer data)
 static gboolean _check_update(gpointer data)
 {
     GtkLabel *timelabel = (GtkLabel*)data;
+    int min, sec;
+    min = sec_expired/60;
+    sec = sec_expired%60;
+
     ++sec_expired;
-    printf("%d\n", sec_expired);
+    printf("Time: %.2d min %.2d sec\n", min, sec);
     if(count >= 15)
     {
         start_timer = TRUE;
@@ -60,9 +64,9 @@ static void _start_timer(GtkWidget *button, gpointer data)
 void create_score(GtkWidget *widget, gpointer allbox)
 {
     GtkWidget *mainbox, *vbox1, *vbox2, *vbox3, *hbox4;
-    GtkWidget *timeshow, *scoreshow, *playagain, *quit;
+    GtkWidget *timeshow, *scoreshow, *playagain, *menu;
     GtkWidget *space1, *space2, *space3, *space4;
-    GtkWidget *imageplayagain, *imagequit;
+    GtkWidget *imageplayagain, *imagemenu;
 
     /*--------- CSS -----------*/
     GtkCssProvider *provider;
@@ -101,10 +105,11 @@ void create_score(GtkWidget *widget, gpointer allbox)
     g_signal_connect(playagain, "clicked",G_CALLBACK(setvalue), allbox);
     g_signal_connect(playagain, "clicked",G_CALLBACK(widget_destroy), mainbox);
 
-    quit = gtk_button_new();
-    imagequit = gtk_image_new_from_file("image/quit.png");
-    gtk_button_set_image(GTK_BUTTON(quit), imagequit);
-    g_signal_connect(G_OBJECT(quit), "clicked",G_CALLBACK(gtk_main_quit), G_OBJECT(window));
+    menu = gtk_button_new();
+    imagemenu = gtk_image_new_from_file("image/menu.png");
+    gtk_button_set_image(GTK_BUTTON(menu), imagemenu);
+    g_signal_connect(menu, "clicked",G_CALLBACK(firstpage), allbox);
+    g_signal_connect(menu, "clicked",G_CALLBACK(widget_destroy), mainbox);
 
     gtk_box_pack_start(GTK_BOX(allbox), mainbox,0,1,0);
     gtk_box_pack_start(GTK_BOX(mainbox), vbox1,1,1,100);
@@ -116,7 +121,7 @@ void create_score(GtkWidget *widget, gpointer allbox)
     gtk_box_pack_start(GTK_BOX(hbox4), space1,1,1,20);
     gtk_box_pack_start(GTK_BOX(hbox4), playagain,0,1,0);
     gtk_box_pack_start(GTK_BOX(hbox4), space2,1,1,0);
-    gtk_box_pack_start(GTK_BOX(hbox4), quit,0,1,0);
+    gtk_box_pack_start(GTK_BOX(hbox4), menu,0,1,0);
     gtk_box_pack_start(GTK_BOX(hbox4), space3,1,1,20);
 
      //------------- CSS  --------------------------------------------------------------------------------------------------
@@ -238,9 +243,9 @@ int create_contact(GtkWidget *widget, gpointer allbox)
     gtk_box_pack_start(GTK_BOX(mainbox), vbox4,1,1,20);
     gtk_box_pack_start(GTK_BOX(vbox1), labelname,1,0,0);
     gtk_box_pack_start(GTK_BOX(vbox1), label,1,0,0);
-    gtk_box_pack_start(GTK_BOX(hbox2), space1,0,0,0);
-    gtk_box_pack_start(GTK_BOX(hbox2), back,1,0,0);
     gtk_box_pack_start(GTK_BOX(hbox2), space1,1,0,0);
+    gtk_box_pack_start(GTK_BOX(hbox2), back,1,0,0);
+    gtk_box_pack_start(GTK_BOX(hbox2), space2,1,0,0);
 
     /*------------- CSS  --------------------------------------------------------------------------------------------------*/
     provider = gtk_css_provider_new ();
@@ -281,7 +286,6 @@ void checkanswer(GtkWidget *widget, gpointer pre)
         if((answer[0]==answer[7]) && (answer[3]==answer[10]))
         {
             score+=100;
-            printf(" > if1");
         }
     }
     else
@@ -289,11 +293,10 @@ void checkanswer(GtkWidget *widget, gpointer pre)
         if((answer[0]!=answer[7]) && (answer[3]!=answer[10]))
         {
             score+=100;
-            printf(" > if2");
         }
     }
 
-    if(count>=2)
+    if(count>=15)
     {
         start_timer = TRUE;
         continue_timer = FALSE;
@@ -527,4 +530,5 @@ int main(int argc, char *argv[])
 
     return 0;
 }
+
 
